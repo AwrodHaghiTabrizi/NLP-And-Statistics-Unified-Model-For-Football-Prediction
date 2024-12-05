@@ -19,6 +19,7 @@ guardian_dataset['Away'] = guardian_dataset['Away'].apply(lambda x: get_standard
 
 
 merged = pd.merge(numeric_dataset, guardian_dataset, left_on=['Home', 'Away', 'Season'], right_on=['Home', 'Away', 'Season'], how='inner', indicator=True)
+match_ID = merged['MatchID']
 merged = merged.drop(columns=['Date', 'MatchID', '_merge'])
 # merged['DateTime'] = pd.to_datetime(merged['DateTime']).dt.date
 merged = merged.rename(columns={"DateTime":"Date"})
@@ -40,6 +41,10 @@ def standardize(df):
 
 merged = merged.dropna()
 merged = standardize(merged)
+merged.insert(0, 'MatchID', match_ID)
 
 output_file_path = 'Final_Data.csv'
 merged.to_csv(output_file_path, index=False)
+
+# a = pd.read_csv('Final_Data.csv')
+# a
